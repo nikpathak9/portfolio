@@ -1,0 +1,214 @@
+@import "tailwindcss";
+
+* {
+  font-family: "Poppins", sans-serif;
+}
+
+body {
+  @apply bg-gray-100 text-gray-600;
+  background: var(--color-bg);
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+:root {
+  --color-bg: #ffffff;
+  --color-text: #424242;
+  --color-primary: #4f46e5;
+  --color-border: #e5e7eb;
+}
+
+.dark {
+  --color-bg: #1a1a1d;
+  --color-text: white;
+  --color-primary: #818cf8;
+  --color-border: #374151;
+}
+
+body {
+  background-color: var(--color-bg);
+  color: var(--color-text);
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeDown {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fadeInUp {
+  animation: fadeInUp 0.6s ease-out forwards;
+}
+
+.animate-fadeUp {
+  animation: fadeUp 0.6s ease-in forwards;
+}
+
+.animate-fadeDown {
+  animation: fadeDown 0.6s ease-in forwards;
+}
+
+.delay-100 {
+  animation-delay: 0.3s;
+}
+.delay-200 {
+  animation-delay: 0.5s;
+}
+.delay-300 {
+  animation-delay: 0.7s;
+}
+
+.type-animation {
+  --cursor-color: #4f46e5; /* indigo-600 */
+}
+
+.type-animation::after {
+  content: "|";
+  animation: cursor 1.1s infinite step-start;
+  color: var(--cursor-color);
+}
+
+@keyframes cursor {
+  50% {
+    opacity: 0;
+  }
+}
+
+.project-card {
+  position: relative;
+  border-radius: 1rem;
+  isolation: isolate;
+  overflow: hidden; /* Ensures the glow doesn't leak outside */
+}
+
+.project-card::before {
+  content: "";
+  position: absolute;
+  inset: 3px;
+  border-radius: inherit;
+  padding: 3px;
+  background: linear-gradient(
+    90deg,
+    #7161ef,
+    #b8b2ff,
+    #957fef,
+    #967aa1,
+    #b8b2ff,
+    #7161ef
+  );
+  background-size: 300% 300%;
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  opacity: 0;
+  transition: opacity 0.3s ease, transform 0.3s ease;
+  animation: borderGradient 3s linear infinite paused;
+  pointer-events: none;
+  z-index: 5;
+  box-shadow: 0 0 15px rgba(113, 97, 239, 0.3); /* Added subtle glow */
+}
+
+.project-card:hover::before {
+  opacity: 1;
+  animation-play-state: running;
+  transform: scale(1.02); /* Slight scale effect on hover */
+}
+
+.project-card > div {
+  position: relative;
+  z-index: 3;
+  border-radius: calc(1rem - 2px);
+  overflow: hidden;
+  transition: transform 0.3s ease; /* Smooth card movement */
+}
+
+.project-card:hover > div {
+  transform: translateY(-2px); /* Slight lift effect */
+}
+
+@keyframes borderGradient {
+  0% {
+    background-position: 0% 50%;
+    box-shadow: 0 0 15px rgba(113, 97, 239, 0.3);
+  }
+  50% {
+    background-position: 100% 50%;
+    box-shadow: 0 0 25px rgba(150, 122, 161, 0.5); /* Enhanced glow at midpoint */
+  }
+  100% {
+    background-position: 0% 50%;
+    box-shadow: 0 0 15px rgba(113, 97, 239, 0.3);
+  }
+}
+
+/* Optional: Add a subtle inner glow */
+.project-card::after {
+  content: "";
+  position: absolute;
+  inset: 3px;
+  border-radius: calc(1rem - 3px);
+  background: rgba(255, 255, 255, 0.1);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  pointer-events: none;
+  z-index: 4;
+}
+
+.project-card:hover::after {
+  opacity: 1;
+}
+
+.options a {
+  position: relative;
+  display: inline-block;
+  overflow: hidden;
+}
+
+.options a::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  height: 2px;
+  width: 0;
+  background-color: currentColor;
+  transition: width 0.3s ease;
+}
+
+.options a:hover::after {
+  width: 100%;
+}
+
+.project-card,
+.motion-row {
+  will-change: transform, opacity;
+}

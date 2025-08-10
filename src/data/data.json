@@ -1,0 +1,75 @@
+{
+  "header": {
+    "title": "Hi, I'm Nikhil Pathak",
+    "subtitle": "Crafting seamless, responsive, and high‑performance web experiences.",
+    "description1": "I'm a frontend developer specializing in creating responsive, accessible, and user‑friendly web applications. With strong skills in React, JavaScript, and modern UI design practices, I focus on building clean and efficient interfaces that deliver seamless user experiences while ensuring optimized performance across devices.",
+    "description2": "I am currently looking for a job as a frontend developer. Hire Me?",
+    "profileImage": "src/assets/p2.jpg",
+    "links": [
+      {
+        "label": "GitHub",
+        "url": "https://github.com/nikpathak9",
+        "icon": "Github",
+        "style": "primary"
+      },
+      {
+        "label": "LinkedIn",
+        "url": "https://www.linkedin.com/in/nikhil-pathak-597708196/",
+        "icon": "LinkedinIcon",
+        "style": "secondary"
+      },
+      {
+        "label": "Resume",
+        "url": "https://drive.google.com/file/d/1ZDTcStsDIUXC5cxTP9ZWBxGUCVSyVikW/view?usp=sharing",
+        "icon": "FileUser",
+        "style": "secondary"
+      }
+    ]
+  },
+  "navbar": [
+    { "label": "Home", "href": "#home" },
+    { "label": "Skills", "href": "#skills" },
+    { "label": "Projects", "href": "#projects" },
+    { "label": "Experience", "href": "#experience" },
+    { "label": "Contact", "href": "#contact" }
+  ],
+  "projects": [
+    {
+      "title": "Goofy Tube Movies",
+      "src": "https://screenshotapi.net/_next/image?url=https%3A%2F%2Fs3.eu-central-2.wasabisys.com%2Fw.storage.screenshotapi.net%2Fgoofy_tube_netlify_app__d8b55548f373.png&w=3840&q=75",
+      "description": "Goofy Tube Movies is a React-based movie discovery app that uses the TMDb API to showcase popular, top-rated, and trending movies and TV shows. It features genre filtering, search suggestions, a custom video player, watchlist support, and a clean, responsive UI.",
+      "preview": "https://goofy-tube.netlify.app/",
+      "tags": ["React", "Redux", "TMDB API", "Video.js"]
+    },
+    {
+      "title": "Social Media Sentiment",
+      "src": "https://screenshotapi.net/_next/image?url=https%3A%2F%2Fs3.eu-central-2.wasabisys.com%2Fw.storage.screenshotapi.net%2Fsocialsentiment_netlify_app__9c54d1da3477.png&w=3840&q=75",
+      "description": "A real-time sentiment analysis dashboard built with React, TypeScript, and Tailwind CSS. Visualizes emotional tone from social media posts using dynamic UI elements like emoji filters, word clouds, and sentiment meters.",
+      "preview": "https://socialsentiment.netlify.app/",
+      "tags": ["React", "TypeScript", "Redux", "Tailwind"]
+    },
+    {
+      "title": "Event Scheduler",
+      "src": "https://screenshotapi.net/_next/image?url=https%3A%2F%2Fs3.eu-central-2.wasabisys.com%2Fw.storage.screenshotapi.net%2Fcalendareventscheduler_netlify_app__ccc83cadded7.png&w=3840&q=75",
+      "description": "A calendar-based event scheduling app built with Next.js and Tailwind CSS. Allows users to create, edit, and delete events with a user-friendly interface.",
+      "preview": "https://calendareventscheduler.netlify.app/",
+      "tags": ["Next.js", "Tailwind"]
+    }
+  ],
+  "experiences": [
+    {
+      "title": "Frontend Developer",
+      "company": "Outlier.ai",
+      "duration": "Oct 2024 - Present",
+      "logo": "https://benturework.s3.amazonaws.com/logo/IryBrTk6xAIJS.png",
+      "description": "I have delivered over 10 successful client projects, consistently recognized for meeting deadlines and solving complex challenges with precision. Leveraging modern frontend frameworks like React, Redux, Next.js, Svelte, Vue, and TypeScript, along with strong expertise in JavaScript, HTML, and CSS, I create scalable and efficient solutions tailored to client needs, with a focus on user experience, performance, and accessibility."
+    },
+    {
+      "title": "Associate Software Development Engineer",
+      "company": "Zee Entertainment Enterprises Ltd.",
+      "duration": "Jan 2022 - Mar 2024",
+      "logo": "https://logos-world.net/wp-content/uploads/2021/11/ZEE5-Logo.png",
+      "description": "I led the development of responsive designs using React.js, Next.js, Tailwind CSS, Redux, JavaScript, HTML, and CSS, achieving a 30% increase in user engagement. By collaborating with cross‑functional teams, I revamped major product pages, improving navigation efficiency and user satisfaction by 25%. I implemented unit testing practices that reduced post‑release bugs by 40%, significantly enhancing platform reliability. Additionally, I developed and maintained RESTful APIs, boosting data retrieval efficiency by 20%."
+    }
+  ]
+}
