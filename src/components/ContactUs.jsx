@@ -9,6 +9,7 @@ export default function ContactUs({ theme }) {
 
   const sendEmail = (e) => {
     e.preventDefault();
+    const toastId = toast.loading("Sending message...");
 
     emailjs
       .sendForm(
@@ -22,11 +23,13 @@ export default function ContactUs({ theme }) {
       )
       .then(
         () => {
-          toast.success("Message sent successfully!");
+          toast.success("Message sent successfully!", { id: toastId });
           form.current.reset();
         },
         () => {
-          toast.error("Failed to send message. Please try again later.");
+          toast.error("Failed to send message. Please try again later.", {
+            id: toastId,
+          });
         }
       );
   };
