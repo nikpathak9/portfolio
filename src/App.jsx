@@ -18,6 +18,9 @@ import Header from "./components/Header";
 import Skills from "./components/Skills";
 import Projects from "./components/Projects";
 import Experience from "./components/Experience";
+import { useState } from "react";
+import LoadingScreen from "./components/LoadingScreen";
+import { motion, AnimatePresence } from "framer-motion";
 
 const getSkillIcon = (skill) => {
   const iconClass =
@@ -122,36 +125,85 @@ const skills = [
 const App = () => {
   const { header, navbar, projects, experiences } = data;
   const { theme, toggleTheme } = useTheme();
+  const [isLoading, setIsLoading] = useState(true);
 
   return (
-    <ThemeWrapper theme={theme}>
-      <div className='max-md:w-full w-4/5 max-w-6xl mx-auto min-h-screen flex flex-col'>
-        {/* Navbar */}
-        <Navbar navbar={navbar} theme={theme} toggleTheme={toggleTheme} />
+    <>
+      <AnimatePresence>
+        {isLoading && <LoadingScreen onLoaded={() => setIsLoading(false)} />}
+      </AnimatePresence>
 
-        {/* Header */}
-        <Header header={header} iconMap={iconMap} />
+      <ThemeWrapper theme={theme}>
+        {!isLoading && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.5 }}
+            className='max-md:w-full w-4/5 max-w-6xl mx-auto min-h-screen flex flex-col'
+          >
+            {/* Navbar with slide-in */}
+            <motion.div
+              initial={{ y: -50 }}
+              animate={{ y: 0 }}
+              transition={{ delay: 0.2, duration: 0.5 }}
+            >
+              <Navbar navbar={navbar} theme={theme} toggleTheme={toggleTheme} />
+            </motion.div>
 
-        {/* Skills Section */}
-        <Skills skills={skills} getSkillIcon={getSkillIcon} />
+            {/* Header with fade-in */}
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 0.4, duration: 0.8 }}
+            >
+              <Header header={header} iconMap={iconMap} />
+            </motion.div>
 
-        {/* Projects Section */}
-        <Projects projects={projects} colors={colors} />
+            {/* Skills with staggered children */}
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 0.6 }}
+            >
+              <Skills skills={skills} getSkillIcon={getSkillIcon} />
+            </motion.div>
 
-        {/* Experience Section */}
-        <Experience
-          experiences={experiences}
-          extractSkills={extractSkills}
-          skillColors={skillColors}
-        />
+            {/* Projects with scale-up */}
+            <motion.div
+              initial={{ scale: 0.98 }}
+              animate={{ scale: 1 }}
+              transition={{ delay: 0.8, duration: 0.5 }}
+            >
+              <Projects projects={projects} colors={colors} />
+            </motion.div>
 
-        {/* Contact Section */}
-        <ContactUs theme={theme} />
+            {/* Experience with fade-up */}
+            <motion.div
+              initial={{ y: 20, opacity: 0 }}
+              animate={{ y: 0, opacity: 1 }}
+              transition={{ delay: 1.0, duration: 0.5 }}
+            >
+              <Experience
+                experiences={experiences}
+                extractSkills={extractSkills}
+                skillColors={skillColors}
+              />
+            </motion.div>
 
-        {/* Toast Notification */}
-        <Toaster position='top-right' richColors />
-      </div>
-    </ThemeWrapper>
+            {/* Contact with fade-in */}
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 1.2, duration: 0.5 }}
+            >
+              <ContactUs theme={theme} />
+            </motion.div>
+
+            <Toaster position='top-right' richColors />
+          </motion.div>
+        )}
+      </ThemeWrapper>
+    </>
   );
 };
 

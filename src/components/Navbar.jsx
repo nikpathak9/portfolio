@@ -22,7 +22,7 @@ const Navbar = ({ navbar, theme, toggleTheme }) => {
             (e.currentTarget.style.color = "var(--color-text)")
           }
         >
-          NIKHIL PATHAK
+          NIKHIL <strong>PATHAK</strong>
         </h1>
 
         {/* Desktop Links */}

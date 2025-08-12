@@ -92,11 +92,11 @@ const Experience = ({ experiences, extractSkills, skillColors }) => {
             <div className='p-4 sm:p-5 bg-transparent rounded-lg shadow-none border-none transition-all duration-300 hover:scale-95'>
               <div className='flex flex-col sm:flex-row items-start sm:items-center gap-4'>
                 {/* Company logo */}
-                <div className='flex-shrink-0 h-10 w-10 sm:h-12 sm:w-12 rounded-full bg-white flex items-center overflow-hidden'>
+                <div className='flex-shrink-0 p-2 h-10 w-10 sm:h-12 sm:w-12 rounded-full bg-white flex items-center justify-center overflow-hidden'>
                   <img
                     src={exp.logo}
                     alt={exp.company}
-                    className='h-7 w-7 sm:h-8 sm:w-8 object-contain'
+                    className='mix-blend-darken object-contain'
                     loading='lazy'
                   />
                 </div>
