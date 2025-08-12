@@ -1,10 +1,9 @@
 import { motion, AnimatePresence } from "framer-motion";
 import { useState, useRef, useEffect } from "react";
 
-const ThemeWrapper = ({ theme, toggleTheme, children }) => {
-  // Initialize displayTheme with the persisted theme or prop
+const ThemeWrapper = ({ theme, children }) => {
+  
   const [displayTheme, setDisplayTheme] = useState(() => {
-    // Check localStorage or fallback to theme prop
     if (typeof window !== "undefined") {
       return localStorage.getItem("theme") || theme || "light";
     }
@@ -73,7 +72,7 @@ const ThemeWrapper = ({ theme, toggleTheme, children }) => {
             key={`${theme}-transition`}
             className='fixed inset-0 z-20 pointer-events-none'
             style={{
-              backgroundColor: getBgColor(theme), // overlay uses new theme color
+              backgroundColor: getBgColor(theme),
             }}
             initial={{
               clipPath: `circle(0% at ${animationOrigin.current.x}% ${animationOrigin.current.y}%)`,
@@ -86,11 +85,11 @@ const ThemeWrapper = ({ theme, toggleTheme, children }) => {
               transition: { duration: 0.5 },
             }}
             transition={{
-              duration: 1.5, // ⏳ slower than before
-              ease: [0.22, 1, 0.36, 1], // smooth “easeOutExpo” feel
+              duration: 1.5,
+              ease: [0.22, 1, 0.36, 1],
             }}
             onAnimationComplete={() => {
-              setDisplayTheme(theme); // switch after spread completes
+              setDisplayTheme(theme);
             }}
           />
         )}

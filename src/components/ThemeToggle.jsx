@@ -5,8 +5,7 @@ const ThemeToggle = ({ theme, toggleTheme }) => {
   return (
     <motion.button
       onClick={toggleTheme}
-      className='relative w-16 h-8 flex items-center rounded-full 
-                 p-1 focus:outline-none shadow-md transition-colors duration-300'
+      className='relative w-16 h-8 flex items-center rounded-full p-1 focus:outline-none shadow-md transition-colors duration-300'
       style={{
         background: theme === "light" ? "#1a1a1d" : "#ffffff",
       }}
