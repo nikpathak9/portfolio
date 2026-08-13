@@ -1104,13 +1104,17 @@ img {
 }
 
 .loader {
+  --loader-ink: #f3f2ec;
+  --loader-muted: #aab0a9;
+  --loader-accent: #c6ff32;
+  --loader-accent-glow: rgba(198, 255, 50, 0.55);
   position: fixed;
   inset: 0;
   z-index: 200;
   display: grid;
   place-items: center;
   background: #070a08;
-  color: var(--ink);
+  color: var(--loader-ink);
 }
 
 .loader::before {
@@ -1128,7 +1132,7 @@ img {
 
 .loader-tag {
   margin: 0 0 18px;
-  color: var(--accent);
+  color: var(--loader-accent);
   font-size: 11px;
   font-weight: 500;
   letter-spacing: 0.18em;
@@ -1167,7 +1171,7 @@ img {
 }
 
 .loader-role {
-  color: var(--muted);
+  color: var(--loader-muted);
   font-size: 12px;
   font-weight: 500;
   letter-spacing: 0.14em;
@@ -1178,7 +1182,7 @@ img {
   display: inline-flex;
   align-items: baseline;
   gap: 3px;
-  color: var(--accent);
+  color: var(--loader-accent);
   font-family: var(--font-display);
   font-size: clamp(28px, 5vw, 56px);
   font-weight: 700;
@@ -1204,8 +1208,8 @@ img {
 .loader-rule i {
   display: block;
   height: 100%;
-  background: linear-gradient(90deg, var(--accent), color-mix(in srgb, var(--accent) 45%, transparent));
-  box-shadow: 0 0 14px var(--accent-glow);
+  background: linear-gradient(90deg, var(--loader-accent), color-mix(in srgb, var(--loader-accent) 45%, transparent));
+  box-shadow: 0 0 14px var(--loader-accent-glow);
   transform-origin: left;
   transform: scaleX(0);
 }
