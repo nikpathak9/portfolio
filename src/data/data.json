@@ -1,75 +1,123 @@
 {
-  "header": {
-    "title": "Hi, I'm Nikhil Pathak",
-    "subtitle": "Crafting seamless, responsive, and high‑performance web experiences.",
-    "description1": "I'm a frontend developer specializing in creating responsive, accessible, and user‑friendly web applications. With strong skills in React, JavaScript, and modern UI design practices, I focus on building clean and efficient interfaces that deliver seamless user experiences while ensuring optimized performance across devices.",
-    "description2": "I am currently looking for a job as a frontend developer. Hire Me?",
-    "profileImage": "https://iili.io/FQCzTbf.jpg",
+  "profile": {
+    "name": "Nikhil Pathak",
+    "intro": "I design and build clear, high-performing web experiences.",
+    "description": "A frontend engineer focused on thoughtful systems, performant interactions, and the small decisions that make digital products feel effortless.",
+    "image": "https://iili.io/FQCzTbf.jpg",
+    "resume": "https://drive.google.com/file/d/1ZDTcStsDIUXC5cxTP9ZWBxGUCVSyVikW/view?usp=sharing",
     "links": [
       {
         "label": "GitHub",
-        "url": "https://github.com/nikpathak9",
-        "icon": "Github",
-        "style": "primary"
+        "href": "https://github.com/nikpathak9"
       },
       {
         "label": "LinkedIn",
-        "url": "https://www.linkedin.com/in/nikhil-pathak-597708196/",
-        "icon": "LinkedinIcon",
-        "style": "secondary"
+        "href": "https://www.linkedin.com/in/nikhil-pathak-597708196/"
       },
       {
-        "label": "Resume",
-        "url": "https://drive.google.com/file/d/1ZDTcStsDIUXC5cxTP9ZWBxGUCVSyVikW/view?usp=sharing",
-        "icon": "FileUser",
-        "style": "secondary"
+        "label": "Email",
+        "href": "mailto:nikpathak099@gmail.com"
       }
     ]
   },
-  "navbar": [
-    { "label": "Home", "href": "#home" },
-    { "label": "Skills", "href": "#skills" },
-    { "label": "Projects", "href": "#projects" },
-    { "label": "Experience", "href": "#experience" },
-    { "label": "Contact", "href": "#contact" }
+  "navigation": [
+    {
+      "label": "Projects",
+      "href": "#projects"
+    },
+    {
+      "label": "Skills",
+      "href": "#skills"
+    },
+    {
+      "label": "Experience",
+      "href": "#experience"
+    },
+    {
+      "label": "Contact",
+      "href": "#contact"
+    }
+  ],
+  "skills": [
+    {
+      "label": "Frontend",
+      "items": [
+        "React",
+        "Next.js",
+        "SolidJS",
+        "LightningJS",
+        "TypeScript",
+        "JavaScript"
+      ]
+    },
+    {
+      "label": "UI engineering",
+      "items": ["HTML", "CSS", "Tailwind CSS", "Framer Motion"]
+    },
+    {
+      "label": "State & data",
+      "items": ["Redux", "REST APIs", "GraphQL"]
+    }
   ],
   "projects": [
     {
       "title": "Goofy Tube Movies",
-      "src": "https://screenshotapi.net/_next/image?url=https%3A%2F%2Fs3.eu-central-2.wasabisys.com%2Fw.storage.screenshotapi.net%2Fgoofy_tube_netlify_app__d8b55548f373.png&w=3840&q=75",
-      "description": "Goofy Tube Movies is a React-based movie discovery app that uses the TMDb API to showcase popular, top-rated, and trending movies and TV shows. It features genre filtering, search suggestions, a custom video player, watchlist support, and a clean, responsive UI.",
+      "image": "https://screenshotapi.net/_next/image?url=https%3A%2F%2Fs3.eu-central-2.wasabisys.com%2Fw.storage.screenshotapi.net%2Fgoofy_tube_netlify_app__d8b55548f373.png&w=3840&q=75",
+      "description": "A movie discovery experience with thoughtful browsing, search, watchlists, and a custom player — all powered by the TMDb API.",
+      "focus": "Discoverability & playback",
+      "role": "Frontend engineering",
       "preview": "https://goofy-tube.netlify.app/",
-      "tags": ["React", "Redux", "TMDB API", "Video.js"]
+      "tags": ["React", "Redux", "TMDb API", "Video.js"]
     },
     {
       "title": "Social Media Sentiment",
-      "src": "https://screenshotapi.net/_next/image?url=https%3A%2F%2Fs3.eu-central-2.wasabisys.com%2Fw.storage.screenshotapi.net%2Fsocialsentiment_netlify_app__9c54d1da3477.png&w=3840&q=75",
-      "description": "A real-time sentiment analysis dashboard built with React, TypeScript, and Tailwind CSS. Visualizes emotional tone from social media posts using dynamic UI elements like emoji filters, word clouds, and sentiment meters.",
+      "image": "https://screenshotapi.net/_next/image?url=https%3A%2F%2Fs3.eu-central-2.wasabisys.com%2Fw.storage.screenshotapi.net%2Fsocialsentiment_netlify_app__9c54d1da3477.png&w=3840&q=75",
+      "description": "A real-time dashboard that makes social sentiment readable through filters, visual summaries, and focused interaction design.",
+      "focus": "Data clarity & interaction",
+      "role": "Frontend engineering",
       "preview": "https://socialsentiment.netlify.app/",
       "tags": ["React", "TypeScript", "Redux", "Tailwind"]
     },
     {
       "title": "Event Scheduler",
-      "src": "https://screenshotapi.net/_next/image?url=https%3A%2F%2Fs3.eu-central-2.wasabisys.com%2Fw.storage.screenshotapi.net%2Fcalendareventscheduler_netlify_app__ccc83cadded7.png&w=3840&q=75",
-      "description": "A calendar-based event scheduling app built with Next.js and Tailwind CSS. Allows users to create, edit, and delete events with a user-friendly interface.",
+      "image": "https://screenshotapi.net/_next/image?url=https%3A%2F%2Fs3.eu-central-2.wasabisys.com%2Fw.storage.screenshotapi.net%2Fcalendareventscheduler_netlify_app__ccc83cadded7.png&w=3840&q=75",
+      "description": "A straightforward calendar workflow for creating, editing, and keeping track of events without unnecessary friction.",
+      "focus": "Workflow design",
+      "role": "Frontend engineering",
       "preview": "https://calendareventscheduler.netlify.app/",
-      "tags": ["Next.js", "Tailwind"]
+      "tags": ["Next.js", "Tailwind CSS", "Calendar UI"]
     }
   ],
   "experiences": [
     {
-      "title": "Frontend Developer",
-      "company": "Outlier.ai",
-      "duration": "Oct 2024 - Present",
-      "logo": "https://framerusercontent.com/images/RYmJm9nRxoYOjXKkptBkN5NxpmY.svg?scale-down-to=512",
-      "description": "I have delivered over 10 successful client projects, consistently recognized for meeting deadlines and solving complex challenges with precision. Leveraging modern frontend frameworks like React, Redux, Next.js, Svelte, Vue, and TypeScript, along with strong expertise in JavaScript, HTML, and CSS, I create scalable and efficient solutions tailored to client needs, with a focus on user experience, performance, and accessibility."
+      "role": "Software Engineer II",
+      "company": "Warner Bros. Discovery",
+      "period": "Nov 2025 — Present",
+      "summary": "Building polished, scalable frontend experiences for a global entertainment platform, with a focus on performance and intuitive product interactions.",
+      "logo": "wbd.png",
+      "initials": "WB"
     },
     {
-      "title": "Associate Software Development Engineer",
+      "role": "Frontend Developer",
+      "company": "Outlier.ai",
+      "period": "Oct 2024 — Oct 2025",
+      "summary": "Delivered 10+ client projects using modern frontend frameworks, with an emphasis on polish, accessibility, and reliable delivery.",
+      "logo": "outlier.png",
+      "initials": "O"
+    },
+    {
+      "role": "Associate Software Development Engineer",
       "company": "Zee Entertainment Enterprises Ltd.",
-      "duration": "Jan 2022 - Mar 2024",
-      "logo": "https://brandeps.com/logo-download/Z/ZEE5-logo-01.png",
-      "description": "I led the development of responsive designs using React.js, Next.js, Tailwind CSS, Redux, JavaScript, HTML, and CSS, achieving a 30% increase in user engagement. By collaborating with cross‑functional teams, I revamped major product pages, improving navigation efficiency and user satisfaction by 25%. I implemented unit testing practices that reduced post‑release bugs by 40%, significantly enhancing platform reliability. Additionally, I developed and maintained RESTful APIs, boosting data retrieval efficiency by 20%."
+      "period": "Jan 2022 — Mar 2024",
+      "summary": "Built responsive product experiences and improved major user journeys, helping increase engagement while reducing post-release bugs.",
+      "logo": "zee.png",
+      "initials": "Z"
     }
-  ]
+  ],
+  "contact": {
+    "email": "nikpathak099@gmail.com",
+    "location": "Bengaluru, India",
+    "phone": "+91 91316 65230",
+    "linkedin": "https://www.linkedin.com/in/nikhil-pathak-597708196/"
+  }
 }

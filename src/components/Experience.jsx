@@ -1,155 +1,147 @@
-import { motion } from "framer-motion";
+import { useEffect, useRef, useState } from "react";
+import { ArrowUpRight } from "lucide-react";
+import Reveal from "./Reveal";
+import wbdLogo from "../assets/wbd.png";
+import outlierLogo from "../assets/outlier.png";
+import zeeLogo from "../assets/zee.png";
 
-const Experience = ({ experiences, extractSkills, skillColors }) => {
-  const containerVariants = {
-    hidden: { opacity: 0 },
-    visible: {
-      opacity: 1,
-      transition: {
-        staggerChildren: 0.15,
-        when: "beforeChildren",
-      },
-    },
-  };
+const companyLogos = {
+  "wbd.png": wbdLogo,
+  "outlier.png": outlierLogo,
+  "zee.png": zeeLogo,
+};
 
-  const textVariants = {
-    hidden: { opacity: 0, y: 20 },
-    visible: {
-      opacity: 1,
-      y: 0,
-      transition: {
-        type: "spring",
-        damping: 15,
-        stiffness: 100,
-      },
-    },
-  };
+/* White chip so brand colours read correctly on the dark card, and so logos
+   that ship with a white background (rather than transparency) still look
+   deliberate. Falls back to a monogram if the file is missing. */
+function CompanyLogo({ experience }) {
+  const [failed, setFailed] = useState(false);
+  const logo = companyLogos[experience.logo] || experience.logo;
+  const showImage = logo && !failed;
 
-  const cardVariants = {
-    hidden: { opacity: 0, y: 30 },
-    visible: {
-      opacity: 1,
-      y: 0,
-      transition: {
-        type: "spring",
-        damping: 15,
-        stiffness: 100,
-      },
-    },
+  return (
+    <span className="experience-logo" aria-hidden="true">
+      {showImage ? (
+        <img
+          src={logo}
+          alt=""
+          loading="lazy"
+          onError={() => setFailed(true)}
+        />
+      ) : (
+        <span className="experience-logo-fallback">
+          {experience.initials || experience.company.slice(0, 1)}
+        </span>
+      )}
+    </span>
+  );
+}
+
+function ExperienceCard({ experience, isActive, isCurrent }) {
+  const ref = useRef(null);
+
+  /* Cursor-tracked spotlight, matching the project and skill cards. */
+  const onMove = (event) => {
+    const el = ref.current;
+    if (!el) return;
+    const b = el.getBoundingClientRect();
+    el.style.setProperty("--spot-x", `${((event.clientX - b.left) / b.width) * 100}%`);
+    el.style.setProperty("--spot-y", `${((event.clientY - b.top) / b.height) * 100}%`);
   };
 
   return (
-    <motion.section
-      id='experience'
-      className='mt-20 px-4 sm:px-6 lg:px-15 py-10 border-none shadow-none rounded-lg'
-      initial='hidden'
-      whileInView='visible'
-      viewport={{ once: false, amount: 0.2 }}
-      variants={containerVariants}
-      style={{ willChange: "opacity" }}
+    <div
+      ref={ref}
+      className={`experience-card ${isActive ? "is-active" : ""}`}
+      onPointerMove={onMove}
     >
-      <motion.h2
-        className='text-2xl md:text-3xl  text-center text-space tracking-widest text-gray-600 font-semibold mb-2'
-        style={{ color: "var(--color-text)" }}
-        variants={textVariants}
-      >
-        Experience
-      </motion.h2>
+      <span className="experience-spot" aria-hidden="true" />
 
-      <motion.p
-        className='text-sm md:text-lg text-center leading-relaxed mb-8 font-space tracking-widest'
-        style={{ color: "var(--color-text)" }}
-        variants={textVariants}
-      >
-        My journey in the tech industry
-      </motion.p>
-
-      <div className='relative'>
-        {/* Timeline line */}
-        <motion.div
-          className='absolute left-1 top-0 w-0.5 bg-gray-200 origin-top sm:left-2'
-          initial={{ height: 0 }}
-          whileInView={{ height: "100%" }}
-          viewport={{ once: false, amount: 0.2 }}
-          transition={{ duration: 1, ease: "easeInOut" }}
-          style={{ willChange: "height" }}
-        />
-
-        {experiences.map((exp, index) => (
-          <motion.div
-            key={index}
-            className='relative mb-10 sm:mb-12 pl-8 sm:pl-10 group'
-            variants={cardVariants}
-            style={{ willChange: "transform, opacity" }}
-            initial='hidden'
-            whileInView='visible'
-            viewport={{ once: false, amount: 0.2 }}
-          >
-            {/* Timeline dot */}
-            <div className='absolute left-0 sm:left-0 top-2 transform -translate-y-1/2 h-3 w-3 sm:h-4 sm:w-4 rounded-full bg-indigo-500 shadow-md group-hover:bg-indigo-600 transition-colors duration-300' />
-
-            {/* Experience card */}
-            <div className='p-4 sm:p-5 bg-transparent rounded-lg shadow-none border-none transition-all duration-300 hover:scale-95'>
-              <div className='flex flex-col sm:flex-row items-start sm:items-center gap-4'>
-                {/* Company logo */}
-                <div className='flex-shrink-0 p-2 h-10 w-10 sm:h-12 sm:w-12 rounded-full bg-white flex items-center justify-center overflow-hidden'>
-                  <img
-                    src={exp.logo}
-                    alt={exp.company}
-                    className='mix-blend-darken object-contain'
-                    loading='lazy'
-                  />
-                </div>
-
-                <div className='flex-1 w-full'>
-                  <div className='flex flex-col sm:flex-row sm:justify-between sm:items-start gap-2'>
-                    <div>
-                      <h3
-                        className='text-base sm:text-lg font-semibold text-gray-900 group-hover:text-indigo-600 transition-colors duration-300 text-space tracking-widest'
-                        style={{ color: "var(--color-text)" }}
-                      >
-                        {exp.title}
-                      </h3>
-                      <p
-                        className='text-gray-700 font-medium text-xs sm:text-sm mt-1 group-hover:text-gray-900 transition-colors duration-300 font-space tracking-widest'
-                        style={{ color: "var(--color-text)" }}
-                      >
-                        {exp.company}
-                      </p>
-                    </div>
-                    <span className='text-[10px] sm:text-xs bg-indigo-50 text-indigo-700 px-2 py-1 rounded-full group-hover:bg-indigo-100 group-hover:text-indigo-800 transition-colors duration-300 border border-indigo self-start sm:self-auto'>
-                      {exp.duration}
-                    </span>
-                  </div>
-
-                  {/* Skills tags */}
-                  <div className='mt-3 flex flex-wrap gap-2'>
-                    {extractSkills(exp.description).map((skill, i) => (
-                      <span
-                        key={i}
-                        className={`text-[10px] sm:text-xs px-2 py-0.5 sm:px-2.5 sm:py-1 rounded-full ${
-                          skillColors[skill] || "bg-gray-100 text-gray-700"
-                        } group-hover:shadow-sm transition-all duration-300`}
-                      >
-                        {skill}
-                      </span>
-                    ))}
-                  </div>
-
-                  <p
-                    className='mt-2 text-gray-600 text-xs sm:text-sm leading-relaxed group-hover:text-gray-700 transition-colors duration-300 font-space tracking-widest'
-                    style={{ color: "var(--color-text)" }}
-                  >
-                    {exp.description}
-                  </p>
-                </div>
-              </div>
-            </div>
-          </motion.div>
-        ))}
+      <div className="experience-card-top">
+        <CompanyLogo experience={experience} />
+        {isCurrent ? (
+          <span className="experience-badge">
+            <i />
+            Current
+          </span>
+        ) : null}
       </div>
-    </motion.section>
-  );
-};
 
-export default Experience;
+      <p className="experience-period">{experience.period}</p>
+      <h3>{experience.role}</h3>
+      <p className="experience-company">{experience.company}</p>
+      <p className="experience-summary">{experience.summary}</p>
+
+      <span className="experience-rule" aria-hidden="true" />
+      <span className="experience-corner" aria-hidden="true">
+        <ArrowUpRight size={14} />
+      </span>
+    </div>
+  );
+}
+
+export default function Experience({ experiences }) {
+  const sectionRef = useRef(null);
+  const [progress, setProgress] = useState(0);
+  const [activeExperience, setActiveExperience] = useState(0);
+
+  useEffect(() => {
+    const element = sectionRef.current;
+    if (!element) return undefined;
+
+    const update = () => {
+      const rect = element.getBoundingClientRect();
+      const span = rect.height - window.innerHeight * 0.25;
+      if (span <= 0) return;
+      const ratio = Math.min(1, Math.max(0, (window.innerHeight * 0.5 - rect.top) / span));
+      setProgress(ratio * 100);
+      setActiveExperience(
+        Math.min(experiences.length - 1, Math.max(0, Math.round(ratio * (experiences.length - 1))))
+      );
+    };
+
+    update();
+    window.addEventListener("scroll", update, { passive: true });
+    window.addEventListener("resize", update);
+    return () => {
+      window.removeEventListener("scroll", update);
+      window.removeEventListener("resize", update);
+    };
+  }, [experiences.length]);
+
+  return (
+    <section ref={sectionRef} id="experience" className="section-band experience-band">
+      <div className="page-shell section experience-section">
+        <Reveal className="section-heading split-heading">
+          <h2>Experience</h2>
+          <p className="section-note">Product thinking, built in code</p>
+        </Reveal>
+
+        <div className="experience-list" style={{ "--timeline-progress": `${progress}%` }}>
+          <span className="experience-rail" aria-hidden="true">
+            <i />
+          </span>
+
+          {experiences.map((experience, index) => (
+            <Reveal
+              className={`experience experience-${index % 2 === 0 ? "left" : "right"}`}
+              key={`${experience.company}-${experience.role}`}
+              delay={index * 0.06}
+            >
+              <ExperienceCard
+                experience={experience}
+                isActive={index === activeExperience}
+                isCurrent={index === 0}
+              />
+              <div className="experience-axis" aria-hidden="true">
+                <span className={`experience-node ${index <= activeExperience ? "is-reached" : ""}`}>
+                  0{index + 1}
+                </span>
+              </div>
+            </Reveal>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}

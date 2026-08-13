@@ -1,47 +1,85 @@
-import { useState } from "react";
-import { motion } from "framer-motion";
+import { useEffect, useState } from "react";
+import { AnimatePresence, motion as Motion } from "framer-motion";
 
-export default function LoadingScreen({ onLoaded }) {
-  const [showName, setShowName] = useState(false);
-  const [loadingDone, setLoadingDone] = useState(false);
+const NAME = "Nikhil Pathak";
+
+/**
+ * Launch screen: a counter running to 100, the name revealing letter by letter
+ * from behind a mask, and a progress rule that fills. On exit the whole panel
+ * wipes upward via clip-path rather than fading, so it reads as a curtain
+ * lifting off the hero underneath.
+ */
+export default function LoadingScreen({ isVisible, duration = 1250 }) {
+  const [percent, setPercent] = useState(0);
+
+  useEffect(() => {
+    if (!isVisible) return undefined;
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+      setPercent(100);
+      return undefined;
+    }
+
+    let frame = 0;
+    let start = 0;
+    const step = (now) => {
+      if (!start) start = now;
+      const t = Math.min(1, (now - start) / duration);
+      // Ease-out so the count decelerates into 100 instead of ending abruptly.
+      setPercent(Math.round((1 - Math.pow(1 - t, 3)) * 100));
+      if (t < 1) frame = requestAnimationFrame(step);
+    };
+    frame = requestAnimationFrame(step);
+    return () => cancelAnimationFrame(frame);
+  }, [isVisible, duration]);
 
   return (
-    <div className='relative w-screen h-screen overflow-hidden bg-white'>
-      {/* Black background shrink */}
-      {!loadingDone && (
-        <motion.div
-          initial={{ width: "100%" }}
-          animate={{ width: "0%" }}
-          transition={{ duration: 2, ease: "easeInOut" }}
-          className='absolute top-0 right-0 h-full bg-black z-20'
-          onUpdate={(latest) => {
-            if (typeof latest.width === "string") {
-              const val = parseFloat(latest.width);
-              if (!showName && val <= 50) {
-                setShowName(true);
-              }
-            }
+    <AnimatePresence>
+      {isVisible && (
+        <Motion.div
+          className='loader'
+          initial={{ clipPath: "inset(0 0 0% 0)" }}
+          exit={{
+            clipPath: "inset(0 0 100% 0)",
+            transition: { duration: 0.85, ease: [0.76, 0, 0.24, 1] },
           }}
-          onAnimationComplete={() => {
-            setLoadingDone(true);
-            onLoaded?.();
-          }}
-        />
-      )}
+          aria-label='Loading'
+          role='status'
+        >
+          <div className='loader-inner'>
+            <p className='loader-tag'>Portfolio · 2026</p>
 
-      <motion.div
-        initial={{ x: -50, opacity: 0 }}
-        animate={{
-          x: showName ? 0 : -50,
-          opacity: showName ? 1 : 0,
-        }}
-        transition={{ duration: 0.8, ease: "easeOut" }}
-        className='absolute inset-0 flex items-center justify-center z-10'
-      >
-        <h1 className='text-3xl md:text-4xl font-light tracking-widest text-black'>
-          NIKHIL <strong>PATHAK</strong>
-        </h1>
-      </motion.div>
-    </div>
+            <h1 className='loader-name' aria-label={NAME}>
+              {NAME.split("").map((char, index) => (
+                <span className='loader-char' key={`${char}-${index}`}>
+                  <Motion.span
+                    initial={{ y: "110%" }}
+                    animate={{ y: "0%" }}
+                    transition={{
+                      duration: 0.7,
+                      delay: 0.06 + index * 0.022,
+                      ease: [0.16, 1, 0.3, 1],
+                    }}
+                  >
+                    {char === " " ? " " : char}
+                  </Motion.span>
+                </span>
+              ))}
+            </h1>
+
+            <div className='loader-foot'>
+              <span className='loader-role'>Frontend Engineer</span>
+              <span className='loader-count'>
+                {String(percent).padStart(3, "0")}
+                <i>%</i>
+              </span>
+            </div>
+
+            <div className='loader-rule'>
+              <i style={{ transform: `scaleX(${percent / 100})` }} />
+            </div>
+          </div>
+        </Motion.div>
+      )}
+    </AnimatePresence>
   );
 }

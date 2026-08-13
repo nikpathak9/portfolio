@@ -1,214 +1,1982 @@
+/* Satoshi + Cabinet Grotesk (Fontshare) are loaded from index.html via
+   preconnect + <link>, not @import — a CSS @import is render-blocking and
+   chains an extra round trip behind this stylesheet.
+   Note: the two families must stay as two separate requests; asking for both
+   in one Fontshare URL returns 200 but silently drops Cabinet Grotesk. */
 @import "tailwindcss";
 
-* {
-  font-family: "Poppins", sans-serif;
+/* ============================================================
+   Tokens — read directly off the Framer build
+   ============================================================ */
+
+:root,
+:root[data-theme="dark"] {
+  --paper: #0b0d0c;
+  --ink: #f3f2ec;
+  --muted: #8d968e; /* card copy, nav */
+  --muted-soft: #aab0a9; /* hero description */
+  --muted-quiet: #7e867f; /* section notes */
+  --meta: #b6bcb6; /* tag / company lines */
+  --availability: #9ea49d;
+  --surface: #111512; /* project + experience cards */
+  --surface-raised: #161a17; /* form fields */
+  --accent: #c6ff32;          /* fills: buttons, contact band, nodes */
+  --accent-text: #c6ff32;     /* accent used as TEXT on the page background */
+  --accent-glow: rgba(198, 255, 50, 0.55);
+  --accent-ink: #182016;
+  --accent-deep: #0b0d0c;
+  --accent-soft: rgba(198, 255, 50, 0.13);
+  --font-sans: "Satoshi", system-ui, -apple-system, sans-serif;
+  --font-display: "Cabinet Grotesk", "Satoshi", system-ui, sans-serif;
 }
 
-body {
-  @apply bg-gray-100 text-gray-600;
-  background: var(--color-bg);
+:root[data-theme="light"] {
+  /* Light theme. The accent has to do two conflicting jobs: fill large areas
+     (contact band, buttons) where it must stay bright, and act as small text
+     where a bright lime on near-white is unreadable. So fills use --accent and
+     text uses --accent-text, a deep green that actually passes contrast. */
+  --paper: #eef1e7;
+  --ink: #0d1210;
+  --muted: #4f584f;
+  --muted-soft: #434b43;
+  --muted-quiet: #5b635b;
+  --meta: #2f362f;
+  --availability: #4f584f;
+  --surface: #dfe7d5;
+  --surface-raised: #f7faf1;
+  --line: #c2cfb4;
+  --accent: #a8e80c;          /* vivid fill */
+  --accent-text: #3f7a00;     /* legible accent text on light */
+  --accent-glow: rgba(120, 190, 0, 0.5);
+  --accent-ink: #16210a;
+  --accent-deep: #0b0d0c;
+  --accent-soft: rgba(120, 190, 0, 0.22);
+}
+
+* {
+  box-sizing: border-box;
 }
 
 html {
   scroll-behavior: smooth;
 }
 
-:root {
-  --color-bg: #ffffff;
-  --color-text: #424242;
-  --color-primary: #4f46e5;
-  --color-border: #e5e7eb;
-}
-
-.dark {
-  --color-bg: #1a1a1d;
-  --color-text: white;
-  --color-primary: #818cf8;
-  --color-border: #374151;
-}
-
 body {
-  background-color: var(--color-bg);
-  color: var(--color-text);
+  margin: 0;
+  overflow-x: hidden;
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--font-sans);
+  font-size: 14px;
+  -webkit-font-smoothing: antialiased;
+  transition: background 0.35s, color 0.35s;
 }
 
-@keyframes fadeInUp {
-  from {
-    opacity: 0;
-    transform: translateY(10px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-@keyframes fadeUp {
-  from {
-    opacity: 0;
-    transform: translateY(20px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-@keyframes fadeDown {
-  from {
-    opacity: 0;
-    transform: translateY(-20px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-.animate-fadeInUp {
-  animation: fadeInUp 0.6s ease-out forwards;
-}
-
-.animate-fadeUp {
-  animation: fadeUp 0.6s ease-in forwards;
-}
-
-.animate-fadeDown {
-  animation: fadeDown 0.6s ease-in forwards;
-}
-
-.delay-100 {
-  animation-delay: 0.3s;
-}
-.delay-200 {
-  animation-delay: 0.5s;
-}
-.delay-300 {
-  animation-delay: 0.7s;
-}
-
-.type-animation {
-  --cursor-color: #4f46e5; /* indigo-600 */
-}
-
-.type-animation::after {
-  content: "|";
-  animation: cursor 1.1s infinite step-start;
-  color: var(--cursor-color);
-}
-
-@keyframes cursor {
-  50% {
-    opacity: 0;
-  }
-}
-
-.project-card {
-  position: relative;
-  border-radius: 1rem;
+main {
   isolation: isolate;
-  overflow: hidden; /* Ensures the glow doesn't leak outside */
-}
-
-.project-card::before {
-  content: "";
-  position: absolute;
-  inset: 3px;
-  border-radius: inherit;
-  padding: 3px;
-  background: linear-gradient(
-    90deg,
-    #7161ef,
-    #b8b2ff,
-    #957fef,
-    #967aa1,
-    #b8b2ff,
-    #7161ef
-  );
-  background-size: 300% 300%;
-  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-  -webkit-mask-composite: xor;
-  mask-composite: exclude;
-  opacity: 0;
-  transition: opacity 0.3s ease, transform 0.3s ease;
-  animation: borderGradient 3s linear infinite paused;
-  pointer-events: none;
-  z-index: 5;
-  box-shadow: 0 0 15px rgba(113, 97, 239, 0.3); /* Added subtle glow */
-}
-
-.project-card:hover::before {
-  opacity: 1;
-  animation-play-state: running;
-  transform: scale(1.02); /* Slight scale effect on hover */
-}
-
-.project-card > div {
   position: relative;
-  z-index: 3;
-  border-radius: calc(1rem - 2px);
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+button {
+  font: inherit;
+}
+
+img {
+  display: block;
+}
+
+::selection {
+  color: var(--paper);
+  background: var(--accent);
+}
+
+/* Design container: 1120 outer, 48px gutters, 1024 of content */
+.page-shell {
+  width: min(100%, 1120px);
+  margin-inline: auto;
+  /* Fluid gutters: resolves to the design's 48px at >=1152 and eases down to
+     20px on small phones, instead of jumping between fixed breakpoint values. */
+  padding-inline: clamp(20px, 4.2vw, 48px);
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
   overflow: hidden;
-  transition: transform 0.3s ease; /* Smooth card movement */
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
 }
 
-.project-card:hover > div {
-  transform: translateY(-2px); /* Slight lift effect */
+/* Scroll reveal — see Reveal.jsx */
+.reveal {
+  transition: opacity 0.7s cubic-bezier(0.16, 1, 0.3, 1), transform 0.7s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-@keyframes borderGradient {
-  0% {
-    background-position: 0% 50%;
-    box-shadow: 0 0 15px rgba(113, 97, 239, 0.3);
-  }
-  50% {
-    background-position: 100% 50%;
-    box-shadow: 0 0 25px rgba(150, 122, 161, 0.5); /* Enhanced glow at midpoint */
-  }
-  100% {
-    background-position: 0% 50%;
-    box-shadow: 0 0 15px rgba(113, 97, 239, 0.3);
-  }
+.reveal.is-hidden {
+  opacity: 0;
+  transform: translateY(22px);
 }
 
-/* Optional: Add a subtle inner glow */
-.project-card::after {
+.reveal.is-visible {
+  opacity: 1;
+  transform: none;
+}
+
+/* Keyboard focus. The site hides the native cursor on fine-pointer devices,
+   so a visible focus ring is the only affordance keyboard users get. */
+:where(a, button, input, textarea, [tabindex]):focus-visible {
+  outline: 2px solid var(--accent-text);
+  outline-offset: 3px;
+  border-radius: 4px;
+}
+
+.contact-band :where(a, button, input, textarea):focus-visible {
+  outline-color: var(--accent-deep);
+}
+
+.contact-form :where(input, textarea, button):focus-visible {
+  outline-color: var(--accent);
+}
+
+/* Skip link for keyboard + screen-reader users */
+.skip-link {
+  position: absolute;
+  top: 8px;
+  left: 8px;
+  z-index: 200;
+  padding: 10px 16px;
+  border-radius: 100px;
+  color: var(--accent-ink);
+  background: var(--accent);
+  font-size: 13px;
+  font-weight: 700;
+  transform: translateY(-200%);
+  transition: transform 0.2s;
+}
+
+.skip-link:focus-visible {
+  transform: none;
+}
+
+/* ============================================================
+   Ambient layers
+   ============================================================ */
+
+.fluid-bg {
+  position: fixed;
+  inset: 0;
+  z-index: -2;
+  width: 100vw;
+  height: 100vh;
+  pointer-events: none;
+}
+
+:root[data-theme="light"] .fluid-bg {
+  /* Alpha-blended dark hues wash out on a pale page; multiply lets the shader
+     tint the background instead of fogging it. */
+  opacity: 0.85;
+  mix-blend-mode: multiply;
+}
+
+.page-progress {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 100;
+  width: 100%;
+  height: 2px;
+  background: var(--accent);
+  box-shadow: 0 0 12px var(--accent-glow);
+  transform-origin: left;
+}
+
+/* ============================================================
+   Section bands + the pink divider pill
+   ============================================================ */
+
+.section-band {
+  position: relative;
+  z-index: 1;
+  overflow: hidden;
+}
+
+.section {
+  padding-block: clamp(52px, 8.4vw, 96px) clamp(58px, 9vw, 104px);
+}
+
+/* ============================================================
+   Header / navigation
+   ============================================================ */
+
+.site-header {
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  height: 72px;
+  background: color-mix(in srgb, var(--paper) 84%, transparent);
+  backdrop-filter: blur(14px);
+}
+
+.nav {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+  height: 100%;
+}
+
+.wordmark {
+  justify-self: start;
+  font-size: 16px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+
+.nav-links {
+  display: flex;
+  grid-column: 2;
+  align-items: center;
+  gap: 30px;
+  color: var(--muted);
+  font-size: 13px;
+  font-weight: 500;
+}
+
+.nav-links a:hover {
+  color: var(--ink);
+}
+
+.nav-availability {
+  justify-self: end;
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  margin: 0;
+  color: var(--availability);
+  font-size: 13px;
+  font-weight: 500;
+}
+
+.nav-availability i {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--accent);
+  box-shadow: 0 0 0 3px var(--accent-soft), 0 0 12px var(--accent-glow);
+}
+
+.menu-button {
+  display: none;
+}
+
+/* ============================================================
+   Hero — 472px copy column + 528px portrait, 24px gap
+   ============================================================ */
+
+.hero-content {
+  display: grid;
+  grid-template-columns: minmax(0, 472px) minmax(0, 340px);
+  justify-content: space-between;
+  align-items: center;
+  gap: 48px;
+  padding-block: 84px 96px;
+}
+
+.hero-copy {
+  max-width: 472px;
+}
+
+.eyebrow {
+  margin: 0;
+  color: var(--accent-text);
+  font-size: 14px;
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  line-height: 1.2;
+  text-transform: uppercase;
+}
+
+.hero h1 {
+  margin: 22px 0 20px;
+  font-family: var(--font-display);
+  font-size: 54px;
+  font-weight: 700;
+  letter-spacing: -0.044em;
+  line-height: 0.98;
+}
+
+.hero-description {
+  max-width: 420px;
+  margin: 0;
+  color: var(--muted-soft);
+  font-size: 17px;
+  font-weight: 400;
+  line-height: 1.55;
+}
+
+.hero-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 28px;
+}
+
+.button {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 16px;
+  border: 0;
+  border-radius: 100px;
+  font-size: 14px;
+  font-weight: 700;
+  transition: transform 0.25s, box-shadow 0.25s;
+}
+
+.button:hover {
+  transform: translateY(-2px);
+}
+
+.button-primary {
+  color: var(--accent-ink);
+  background: var(--accent);
+  box-shadow: 0 0 26px var(--accent-soft);
+}
+
+.button-secondary {
+  color: var(--ink);
+  border: 1px solid color-mix(in srgb, var(--ink) 22%, transparent);
+  background: transparent;
+}
+
+.button-secondary:hover {
+  border-color: var(--accent-text);
+  color: var(--accent-text);
+}
+
+/* Hero portrait — sized so its height sits close to the copy column,
+   so the two hero halves read as one balanced block. */
+
+/* The source photo is 1536×2048 (3:4). The frame keeps that ratio so the
+   image is never cropped, and is width-capped so its height stays close to
+   the copy column beside it. */
+.hero-portrait {
+  position: relative;
+  overflow: hidden;
+  justify-self: end;
+  width: 100%;
+  margin: 0;
+  aspect-ratio: 3 / 4;
+  border-radius: 16px;
+  background: var(--surface);
+  box-shadow: 0 28px 70px rgba(0, 0, 0, 0.4);
+}
+
+.hero-portrait img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  transition: transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.hero-portrait:hover img {
+  transform: scale(1.03);
+}
+
+/* Keeps the image from fighting the dark page edge */
+.hero-portrait::after {
   content: "";
   position: absolute;
-  inset: 3px;
-  border-radius: calc(1rem - 3px);
-  background: rgba(255, 255, 255, 0.1);
-  opacity: 0;
-  transition: opacity 0.3s ease;
+  inset: 0;
+  border-radius: inherit;
+  box-shadow: inset 0 0 0 1px rgba(243, 242, 236, 0.08);
   pointer-events: none;
-  z-index: 4;
 }
 
-.project-card:hover::after {
+/* ============================================================
+   Section headings
+   ============================================================ */
+
+.split-heading {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 32px;
+}
+
+.section-heading h2 {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: 34px;
+  font-weight: 700;
+  letter-spacing: -0.035em;
+  line-height: 1;
+}
+
+.section-note {
+  margin: 0;
+  color: var(--muted-quiet);
+  font-size: 13px;
+  font-weight: 500;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+/* ============================================================
+   Selected work — 3 × 329px cards, 18px gap
+   ============================================================ */
+
+.project-list {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 18px;
+  margin-top: 36px;
+}
+
+.project {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  padding: 26px;
+  border: 0;
+  border-radius: 16px;
+  background: var(--surface);
+  transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.35s;
+}
+
+.project:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 18px 44px rgba(0, 0, 0, 0.35);
+}
+
+.project-image {
+  position: relative;
+  overflow: hidden;
+  display: block;
+  aspect-ratio: 2.1;
+  border-radius: 10px;
+  background: var(--surface-raised);
+}
+
+.project-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: top center;
+  transition: transform 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.project:hover .project-image img {
+  transform: scale(1.05);
+}
+
+.project-details {
+  display: grid;
+  align-content: start;
+  gap: 8px;
+  flex: 1;
+}
+
+.project-number {
+  margin: 0;
+  color: var(--accent-text);
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+}
+
+.project-details h3 {
+  margin: 0;
+  font-size: 19px;
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  line-height: 1.1;
+}
+
+.project-description {
+  margin: 0;
+  color: var(--muted);
+  font-size: 14px;
+  line-height: 1.45;
+}
+
+.project-meta {
+  margin: 4px 0 0;
+  color: var(--meta);
+  font-size: 13px;
+  font-weight: 500;
+}
+
+.project-link {
+  align-self: end;
+  justify-self: start;
+  margin-top: 6px;
+  color: var(--meta);
+  transition: color 0.25s, transform 0.25s;
+}
+
+.project:hover .project-link {
+  color: var(--accent-text);
+  transform: translate(2px, -2px);
+}
+
+/* ============================================================
+   Experience
+   ============================================================ */
+
+.experience-list {
+  --timeline-progress: 0%;
+  position: relative;
+  display: grid;
+  gap: 32px;
+  margin-top: 40px;
+  padding: 8px 0 10px;
+}
+
+/* Rail with a scroll-driven fill, so the timeline reads as progress. */
+.experience-rail {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 50%;
+  width: 1px;
+  background: color-mix(in srgb, var(--line) 90%, transparent);
+  transform: translateX(-50%);
+}
+
+.experience-rail i {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: var(--timeline-progress);
+  background: linear-gradient(180deg, var(--accent), color-mix(in srgb, var(--accent) 35%, transparent));
+  box-shadow: 0 0 12px var(--accent-glow);
+  transition: height 0.15s linear;
+}
+
+.experience {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 80px minmax(0, 1fr);
+  align-items: center;
+  gap: 20px;
+}
+
+.experience-card {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  grid-column: 1;
+  justify-self: start;
+  display: grid;
+  gap: 10px;
+  width: min(100%, 340px);
+  padding: 26px 26px 30px;
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  background: color-mix(in srgb, var(--surface) 88%, transparent);
+  transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.4s, box-shadow 0.4s;
+  will-change: transform;
+}
+
+.experience-right .experience-card {
+  grid-column: 3;
+  justify-self: end;
+}
+
+.experience-card:hover {
+  transform: translateY(-6px);
+  border-color: color-mix(in srgb, var(--accent) 55%, var(--line));
+  box-shadow: 0 22px 50px rgba(0, 0, 0, 0.32);
+}
+
+.experience.is-active .experience-card,
+.experience-card.is-active {
+  border-color: color-mix(in srgb, var(--accent) 40%, var(--line));
+}
+
+/* Cursor spotlight — same treatment as the project and skill cards. */
+.experience-spot {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  border-radius: inherit;
+  background: radial-gradient(
+    240px circle at var(--spot-x, 50%) var(--spot-y, 50%),
+    color-mix(in srgb, var(--accent) 15%, transparent),
+    transparent 70%
+  );
+  opacity: 0;
+  transition: opacity 0.35s;
+  pointer-events: none;
+}
+
+.experience-card:hover .experience-spot {
   opacity: 1;
 }
 
-.options a {
+.experience-card-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 4px;
+}
+
+.experience-logo {
+  display: grid;
+  place-items: center;
+  width: 46px;
+  height: 46px;
+  padding: 7px;
+  border-radius: 12px;
+  /* Near-white in both themes: these are brand marks drawn for light
+     backgrounds, so the chip supplies one rather than inverting them. */
+  background: #ffffff;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.25), inset 0 0 0 1px rgba(0, 0, 0, 0.06);
+  transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.experience-card:hover .experience-logo {
+  transform: scale(1.06) rotate(-3deg);
+}
+
+.experience-logo img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.experience-logo-fallback {
+  color: #14181a;
+  font-family: var(--font-display);
+  font-size: 18px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+
+.experience-period {
+  margin: 0 0 2px;
+  color: var(--accent-text);
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+}
+
+.experience-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 9px;
+  border-radius: 100px;
+  color: var(--accent-text);
+  background: var(--accent-soft);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.experience-badge i {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--accent);
+  box-shadow: 0 0 8px var(--accent-glow);
+  animation: badge-pulse 2.2s ease-in-out infinite;
+}
+
+@keyframes badge-pulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.55; transform: scale(0.82); }
+}
+
+.experience h3 {
+  margin: 0;
+  font-size: 20px;
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  line-height: 1.15;
+}
+
+.experience-company {
+  margin: -4px 0 0;
+  color: var(--meta);
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.experience-summary {
+  margin: 0;
+  color: var(--muted);
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+/* Accent rule that draws itself in on hover */
+.experience-rule {
+  position: absolute;
+  left: 26px;
+  bottom: 18px;
+  width: 42px;
+  height: 2px;
+  border-radius: 2px;
+  background: var(--accent);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.45s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.experience-card:hover .experience-rule {
+  transform: scaleX(1);
+}
+
+.experience-corner {
+  position: absolute;
+  top: 22px;
+  right: 22px;
+  display: grid;
+  place-items: center;
+  color: var(--accent-text);
+  opacity: 0;
+  transform: translate(-6px, 6px);
+  transition: opacity 0.35s, transform 0.45s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.experience-card:hover .experience-corner {
+  opacity: 1;
+  transform: none;
+}
+
+.experience-axis {
   position: relative;
+  grid-column: 2;
+  grid-row: 1;
+  align-self: stretch;
+}
+
+.experience-node {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  display: grid;
+  place-items: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 100px;
+  color: var(--muted);
+  background: var(--surface);
+  border: 1px solid var(--line);
+  box-shadow: 0 0 0 5px var(--paper);
+  font-size: 12px;
+  font-weight: 700;
+  transform: translate(-50%, -50%);
+  transition: color 0.4s, background 0.4s, border-color 0.4s, box-shadow 0.4s;
+}
+
+/* Nodes light up as the rail fill passes them. */
+.experience-node.is-reached {
+  color: var(--accent-ink);
+  background: var(--accent);
+  border-color: var(--accent);
+  box-shadow: 0 0 0 5px var(--paper), 0 0 24px var(--accent-glow);
+}
+
+/* ============================================================
+   Contact — full lime band
+   ============================================================ */
+
+.contact-band {
+  position: relative;
+  z-index: 1;
+  background: var(--accent);
+  color: var(--accent-deep);
+}
+
+.contact {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  align-items: start;
+  gap: 30px 96px;
+  padding-block: 64px 48px;
+}
+
+.contact-eyebrow {
+  margin: 0;
+  color: var(--accent-ink);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.contact-lead {
+  grid-column: 1;
+}
+
+.contact-lead h2 {
+  margin: 18px 0 0;
+  font-family: var(--font-display);
+  font-size: 28px;
+  font-weight: 700;
+  letter-spacing: -0.032em;
+  line-height: 1.08;
+  color: var(--accent-deep);
+}
+
+.contact-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 18px;
+  margin-top: 22px;
+}
+
+.contact-links a {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding-bottom: 2px;
+  border-bottom: 1px solid color-mix(in srgb, var(--accent-deep) 35%, transparent);
+  color: var(--accent-deep);
+  font-size: 13px;
+  font-weight: 700;
+  transition: border-color 0.2s, opacity 0.2s;
+}
+
+.contact-links a:hover {
+  border-color: var(--accent-deep);
+  opacity: 0.72;
+}
+
+.contact-copy {
+  grid-column: 2;
+}
+
+.contact-line {
+  margin: 18px 0 16px;
+  font-size: 19px;
+  font-weight: 500;
+  letter-spacing: -0.02em;
+  line-height: 1.35;
+}
+
+.contact-email {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 15px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
+
+/* One dark card holding all fields, each field its own raised box */
+.contact-form {
+  grid-column: 2;
+  display: grid;
+  gap: 12px;
+  padding: 16px;
+  border-radius: 12px;
+  background: var(--paper);
+}
+
+.contact-form label {
+  display: grid;
+  gap: 6px;
+  color: var(--accent);
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.contact-form input,
+.contact-form textarea {
+  width: 100%;
+  padding: 10px 12px;
+  border: 0;
+  border-radius: 8px;
+  outline: 0;
+  color: var(--ink);
+  background: var(--surface-raised);
+  font-family: var(--font-sans);
+  font-size: 14px;
+  font-weight: 500;
+  resize: vertical;
+}
+
+.contact-form input::placeholder,
+.contact-form textarea::placeholder {
+  color: color-mix(in srgb, var(--ink) 55%, transparent);
+}
+
+.contact-form input:focus,
+.contact-form textarea:focus {
+  box-shadow: 0 0 0 1px var(--accent);
+}
+
+.contact-form button {
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  gap: 7px;
+  padding: 12px 18px;
+  color: var(--ink);
+  background: var(--paper);
+  border: 0;
+  border-radius: 100px;
+  font-family: var(--font-sans);
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: color 0.25s, background 0.25s;
+}
+
+.contact-form button:hover {
+  color: var(--accent-ink);
+  background: var(--accent);
+}
+
+.contact-bottom {
+  grid-column: 1 / -1;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-top: 22px;
+  color: var(--accent-ink);
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.contact-bottom p {
+  margin: 0;
+}
+
+.contact-place {
+  margin-inline: auto;
+  opacity: 0.75;
+}
+
+/* Sits on the lime contact band in both themes, so it is coloured against
+   that band — not against --ink/--paper, which flip with the theme. */
+.theme-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--accent-deep);
+  font-family: var(--font-sans);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+
+.theme-toggle-label {
+  min-width: 38px;
+  text-align: right;
+}
+
+.theme-toggle-track {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 52px;
+  height: 28px;
+  padding: 0 7px;
+  border-radius: 100px;
+  background: var(--accent-deep);
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.14);
+  transition: background 0.35s;
+}
+
+.theme-toggle-icon {
+  position: relative;
+  z-index: 1;
+  color: rgba(243, 242, 236, 0.55);
+  transition: color 0.35s;
+}
+
+.theme-toggle-track.is-light .icon-sun,
+.theme-toggle-track.is-dark .icon-moon {
+  color: var(--accent-deep);
+}
+
+.theme-toggle-knob {
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: var(--accent);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.45);
+  transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* Dark = knob right (over the moon), light = knob left (over the sun). */
+.theme-toggle-track.is-dark .theme-toggle-knob {
+  transform: translateX(24px);
+}
+
+.theme-toggle:hover .theme-toggle-knob {
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.55), 0 0 14px var(--accent-glow);
+}
+
+.theme-toggle:focus-visible {
+  outline: 2px solid var(--accent-deep);
+  outline-offset: 4px;
+  border-radius: 100px;
+}
+
+/* ============================================================
+   Cursor + loader
+   ============================================================ */
+
+/* Trailing cursor. Solid fill + contrasting ring rather than a blend mode,
+   which used to make it vanish over green imagery. */
+.cursor-dot,
+.cursor-ring {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 120;
+  border-radius: 50%;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.25s, width 0.25s, height 0.25s, background 0.25s, border-color 0.25s;
+}
+
+.cursor-dot {
+  width: 7px;
+  height: 7px;
+  background: var(--accent);
+  box-shadow: 0 0 0 1.5px rgba(0, 0, 0, 0.55), 0 0 12px var(--accent);
+}
+
+.cursor-ring {
+  width: 30px;
+  height: 30px;
+  border: 1.5px solid color-mix(in srgb, var(--accent) 75%, transparent);
+  box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.35) inset;
+}
+
+.cursor-dot.is-visible,
+.cursor-ring.is-visible {
+  opacity: 1;
+}
+
+.cursor-ring.is-active {
+  width: 54px;
+  height: 54px;
+  border-color: var(--accent);
+  background: color-mix(in srgb, var(--accent) 14%, transparent);
+}
+
+/* On the lime band a lime cursor would disappear, so it flips to ink.
+   Toggled by JS (cursor-on-light) rather than blend modes, which is what
+   made the old cursor vanish over green imagery. */
+.cursor-dot.on-light {
+  background: var(--accent-deep);
+  box-shadow: 0 0 0 1.5px rgba(255, 255, 255, 0.5);
+}
+
+.cursor-ring.on-light {
+  border-color: color-mix(in srgb, var(--accent-deep) 70%, transparent);
+  box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.3) inset;
+}
+
+.cursor-ring.on-light.is-active {
+  background: color-mix(in srgb, var(--accent-deep) 12%, transparent);
+  border-color: var(--accent-deep);
+}
+
+.loader {
+  position: fixed;
+  inset: 0;
+  z-index: 200;
+  display: grid;
+  place-items: center;
+  background: #070a08;
+  color: var(--ink);
+}
+
+.loader::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(120% 80% at 50% 100%, rgba(198, 255, 50, 0.12), transparent 60%);
+  pointer-events: none;
+}
+
+.loader-inner {
+  position: relative;
+  width: min(100% - 40px, 1120px);
+}
+
+.loader-tag {
+  margin: 0 0 18px;
+  color: var(--accent);
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+}
+
+.loader-name {
+  display: flex;
+  flex-wrap: wrap;
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: clamp(44px, 11vw, 132px);
+  font-weight: 700;
+  letter-spacing: -0.05em;
+  line-height: 0.94;
+}
+
+/* Mask per character so the letters rise out of nothing. */
+.loader-char {
   display: inline-block;
   overflow: hidden;
+  white-space: pre;
 }
 
-.options a::after {
-  content: "";
-  position: absolute;
-  bottom: 0;
-  left: 0;
+.loader-char > span {
+  display: inline-block;
+  will-change: transform;
+}
+
+.loader-foot {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 20px;
+  margin-top: clamp(20px, 4vh, 40px);
+}
+
+.loader-role {
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.loader-count {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 3px;
+  color: var(--accent);
+  font-family: var(--font-display);
+  font-size: clamp(28px, 5vw, 56px);
+  font-weight: 700;
+  letter-spacing: -0.04em;
+  /* Tabular figures stop the counter jittering as digits change width. */
+  font-variant-numeric: tabular-nums;
+}
+
+.loader-count i {
+  font-size: 0.36em;
+  font-style: normal;
+  opacity: 0.6;
+}
+
+.loader-rule {
+  overflow: hidden;
   height: 2px;
-  width: 0;
-  background-color: currentColor;
-  transition: width 0.3s ease;
+  margin-top: 16px;
+  border-radius: 2px;
+  background: rgba(243, 242, 236, 0.12);
 }
 
-.options a:hover::after {
+.loader-rule i {
+  display: block;
+  height: 100%;
+  background: linear-gradient(90deg, var(--accent), color-mix(in srgb, var(--accent) 45%, transparent));
+  box-shadow: 0 0 14px var(--accent-glow);
+  transform-origin: left;
+  transform: scaleX(0);
+}
+
+/* Hide the native cursor only where the custom one actually runs: a fine
+   pointer, motion allowed. Otherwise the page would have no cursor at all. */
+@media (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference) {
+  body,
+  a,
+  button {
+    cursor: none;
+  }
+}
+
+/* ============================================================
+   Tablet — 810 to 1151
+   ============================================================ */
+
+@media (max-width: 1151px) {
+  .hero-content {
+    gap: 32px;
+    padding-block: 48px 64px;
+  }
+
+  .hero-content {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 290px);
+  }
+
+  .hero h1 {
+    font-size: 42px;
+  }
+
+  .hero-description {
+    font-size: 15px;
+  }
+
+
+
+
+  .section-heading h2 {
+    font-size: 28px;
+  }
+
+  .project-list {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 16px;
+  }
+
+  .project {
+    padding: 22px;
+  }
+
+  /* Timeline collapses to stacked full-width cards */
+  .experience-list {
+    gap: 14px;
+  }
+
+  .experience-rail {
+    display: none;
+  }
+
+  .experience {
+    display: block;
+  }
+
+  .experience-card,
+  .experience-right .experience-card {
+    width: 100%;
+    justify-self: stretch;
+    padding: 22px 22px 26px;
+  }
+
+  .experience-rule {
+    left: 22px;
+    bottom: 14px;
+  }
+
+  .experience-axis {
+    display: none;
+  }
+
+  .contact {
+    gap: 26px 48px;
+  }
+
+  .contact-lead h2 {
+    font-size: 24px;
+  }
+
+  .contact-line {
+    font-size: 17px;
+  }
+}
+
+/* ============================================================
+   Phone
+   ============================================================ */
+
+@media (max-width: 809px) {
+  .site-header {
+    height: 58px;
+  }
+
+  .nav {
+    grid-template-columns: 1fr auto;
+  }
+
+  .nav-availability {
+    display: none;
+  }
+
+  .menu-button {
+    display: grid;
+    place-content: center;
+    gap: 5px;
+    grid-column: 2;
+    grid-row: 1;
+    justify-self: end;
+    width: 40px;
+    height: 40px;
+    padding: 0;
+    border: 1px solid var(--line);
+    border-radius: 100px;
+    background: color-mix(in srgb, var(--surface) 70%, transparent);
+    cursor: pointer;
+    transition: border-color 0.3s, background 0.3s;
+  }
+
+  .menu-button:hover,
+  .menu-button.is-open {
+    border-color: color-mix(in srgb, var(--accent) 60%, var(--line));
+  }
+
+  /* Two bars that rotate into an X rather than swapping icon glyphs. */
+  .menu-bar {
+    display: block;
+    width: 17px;
+    height: 1.5px;
+    border-radius: 2px;
+    background: var(--ink);
+    transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), background 0.3s;
+  }
+
+  .menu-button.is-open .menu-bar {
+    background: var(--accent);
+  }
+
+  .menu-button.is-open .menu-bar:first-child {
+    transform: translateY(3.25px) rotate(45deg);
+  }
+
+  .menu-button.is-open .menu-bar:last-child {
+    transform: translateY(-3.25px) rotate(-45deg);
+  }
+
+  .nav-links {
+    display: none;
+  }
+
+  .hero-content {
+    grid-template-columns: 1fr;
+    justify-content: stretch;
+    gap: 28px;
+    padding-block: 32px 40px;
+  }
+
+  .hero-portrait {
+    justify-self: center;
+    width: 100%;
+    max-width: 320px;
+  }
+
+  .hero-copy {
+    max-width: none;
+  }
+
+  .hero h1 {
+    font-size: clamp(32px, 9vw, 40px);
+  }
+
+  .hero-description {
+    max-width: 52ch;
+    font-size: 15px;
+  }
+
+
+
+  .section-heading h2 {
+    font-size: 26px;
+  }
+
+  .split-heading {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+  }
+
+  .project-list {
+    grid-template-columns: 1fr;
+    gap: 12px;
+    margin-top: 22px;
+  }
+
+  .contact {
+    grid-template-columns: 1fr;
+    gap: 22px;
+    padding-block: 40px 28px;
+  }
+
+  .contact-lead,
+  .contact-copy,
+  .contact-form,
+  .contact-bottom {
+    grid-column: 1;
+  }
+
+  .contact-lead h2 {
+    font-size: 22px;
+  }
+
+  .contact-line {
+    max-width: 46ch;
+    font-size: 16px;
+  }
+
+  .contact-bottom {
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+
+  .contact-place {
+    margin-inline: 0;
+  }
+
+  .custom-cursor {
+    display: none;
+  }
+
+  body,
+  a,
+  button {
+    cursor: auto;
+  }
+}
+
+/* 600-809: still one hero column, but wide enough for a 2-up work grid and a
+   side-by-side contact block. Without this an iPad portrait (768px) fell into
+   the phone layout and rendered 728px-wide single-column cards. */
+@media (min-width: 600px) and (max-width: 809px) {
+  .project-list {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 14px;
+  }
+
+  .contact {
+    grid-template-columns: 1fr 1fr;
+    gap: 24px 40px;
+  }
+
+  .contact-copy,
+  .contact-form {
+    grid-column: 2;
+  }
+
+  .contact-lead {
+    grid-column: 1;
+  }
+
+  .hero-portrait {
+    max-width: 360px;
+  }
+
+  .split-heading {
+    flex-direction: row;
+    align-items: baseline;
+  }
+}
+
+
+/* ============================================================
+   Motion primitives
+   ============================================================ */
+
+.magnetic {
+  display: inline-flex;
+  transition: transform 0.45s cubic-bezier(0.16, 1, 0.3, 1);
+  will-change: transform;
+}
+
+/* Masked line reveal for the hero headline */
+.headline-line {
+  display: block;
+  overflow: hidden;
+}
+
+.headline-inner {
+  display: block;
+  will-change: transform;
+}
+
+.hero-portrait-sheen {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(115deg, transparent 38%, rgba(255, 255, 255, 0.16) 50%, transparent 62%);
+  transform: translateX(-120%);
+  pointer-events: none;
+}
+
+.hero-portrait:hover .hero-portrait-sheen {
+  transition: transform 0.9s cubic-bezier(0.16, 1, 0.3, 1);
+  transform: translateX(120%);
+}
+
+
+/* Project card tilt + cursor spotlight */
+.project-shell {
+  display: flex;
+}
+
+.project {
+  position: relative;
+  isolation: isolate;
   width: 100%;
+  transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.4s;
+  will-change: transform;
 }
 
-.project-card,
-.motion-row {
-  will-change: transform, opacity;
+.project:hover {
+  box-shadow: 0 22px 50px rgba(0, 0, 0, 0.4);
+}
+
+.project-spot {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  border-radius: inherit;
+  background: radial-gradient(
+    260px circle at var(--spot-x, 50%) var(--spot-y, 50%),
+    color-mix(in srgb, var(--accent) 13%, transparent),
+    transparent 70%
+  );
+  opacity: 0;
+  transition: opacity 0.35s;
+  pointer-events: none;
+}
+
+.project:hover .project-spot {
+  opacity: 1;
+}
+
+.project-open {
+  position: absolute;
+  right: 10px;
+  bottom: 10px;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 7px 10px;
+  border-radius: 100px;
+  color: var(--accent-ink);
+  background: var(--accent);
+  font-size: 10px;
+  font-weight: 700;
+  opacity: 0;
+  transform: translateY(8px);
+  transition: opacity 0.3s, transform 0.3s;
+}
+
+.project:hover .project-open {
+  opacity: 1;
+  transform: none;
+}
+
+/* ============================================================
+   Skills
+   ============================================================ */
+
+.skills-section {
+  padding-bottom: clamp(34px, 5vw, 56px);
+}
+
+.skill-groups {
+  display: grid;
+  gap: 34px;
+  margin-top: 38px;
+}
+
+.skill-group {
+  display: grid;
+  grid-template-columns: 168px minmax(0, 1fr);
+  gap: 24px;
+  align-items: start;
+}
+
+.skill-group-label {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  margin: 6px 0 0;
+  color: var(--ink);
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+
+.skill-group-label span {
+  color: var(--accent-text);
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.1em;
+}
+
+.skill-cards {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.skill-card {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 20px;
+  width: 116px;
+  min-height: 108px;
+  padding: 14px;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: color-mix(in srgb, var(--surface) 80%, transparent);
+  transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.35s;
+  will-change: transform;
+}
+
+.skill-card:hover {
+  border-color: color-mix(in srgb, var(--accent) 55%, var(--line));
+}
+
+.skill-card-glow {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: radial-gradient(
+    120px circle at var(--glow-x, 50%) var(--glow-y, 50%),
+    color-mix(in srgb, var(--accent) 22%, transparent),
+    transparent 72%
+  );
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+
+.skill-card:hover .skill-card-glow {
+  opacity: 1;
+}
+
+.skill-card-icon {
+  width: 24px;
+  height: 24px;
+  color: var(--ink);
+  transition: color 0.3s, transform 0.3s;
+}
+
+.skill-card:hover .skill-card-icon {
+  color: var(--accent-text);
+  transform: scale(1.12) rotate(-5deg);
+}
+
+.skill-card-mono {
+  display: grid;
+  place-items: center;
+  width: 24px;
+  height: 24px;
+  border: 1px solid currentColor;
+  border-radius: 7px;
+  color: var(--muted);
+  font-size: 10px;
+  font-weight: 700;
+}
+
+.skill-card-label {
+  color: var(--meta);
+  font-size: 11px;
+  font-weight: 600;
+  line-height: 1.25;
+}
+
+/* Edge-to-edge marquee */
+.skill-marquee {
+  overflow: hidden;
+  padding: 18px 0;
+  border-top: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
+  background: color-mix(in srgb, var(--surface) 45%, transparent);
+  mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent);
+}
+
+.skill-marquee-track {
+  --marquee-distance: 0px;
+  --marquee-duration: 30s;
+  display: flex;
+  width: max-content;
+  animation: marquee var(--marquee-duration) linear infinite;
+}
+
+.skill-marquee:hover .skill-marquee-track {
+  animation-play-state: paused;
+}
+
+.skill-marquee-group {
+  display: flex;
+  align-items: center;
+}
+
+.skill-marquee-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 26px;
+  padding-right: 26px;
+  color: var(--muted-quiet);
+  font-family: var(--font-display);
+  font-size: 26px;
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  white-space: nowrap;
+}
+
+.skill-marquee-item i {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--accent);
+}
+
+/* Travels exactly one copy width, so the loop point is always seamless
+   regardless of how many copies are rendered. */
+@keyframes marquee {
+  from { transform: translate3d(0, 0, 0); }
+  to { transform: translate3d(calc(-1 * var(--marquee-distance)), 0, 0); }
+}
+
+@media (max-width: 809px) {
+  .skill-group {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+
+  .skill-card {
+    width: calc(33.333% - 7px);
+    min-height: 92px;
+  }
+
+  .skill-marquee-item {
+    font-size: 18px;
+    gap: 18px;
+    padding-right: 18px;
+  }
+}
+
+@media (max-width: 480px) {
+  .skill-card {
+    width: calc(50% - 5px);
+  }
+}
+
+
+/* ============================================================
+   Mobile overlay menu
+   ============================================================ */
+
+.mobile-menu {
+  position: fixed;
+  inset: 0;
+  z-index: 40;
+  display: none;
+  flex-direction: column;
+  justify-content: center;
+  gap: 40px;
+  padding: 84px clamp(20px, 6vw, 40px) 40px;
+  background: color-mix(in srgb, var(--paper) 92%, transparent);
+  backdrop-filter: blur(22px) saturate(140%);
+  /* Wipes open from the top instead of just fading. */
+  clip-path: inset(0 0 100% 0);
+  transition: clip-path 0.65s cubic-bezier(0.76, 0, 0.24, 1);
+}
+
+.mobile-menu.is-open {
+  clip-path: inset(0 0 0 0);
+}
+
+.mobile-menu-list {
+  display: grid;
+  gap: 4px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.mobile-menu-list li,
+.mobile-menu-foot {
+  opacity: 0;
+  transform: translateY(26px);
+}
+
+/* Each row eases in behind the wipe, staggered by its index. */
+.mobile-menu.is-open .mobile-menu-list li,
+.mobile-menu.is-open .mobile-menu-foot {
+  opacity: 1;
+  transform: none;
+  transition: opacity 0.55s cubic-bezier(0.16, 1, 0.3, 1) calc(0.18s + var(--i) * 0.07s),
+    transform 0.55s cubic-bezier(0.16, 1, 0.3, 1) calc(0.18s + var(--i) * 0.07s);
+}
+
+.mobile-menu-list a {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: baseline;
+  gap: 14px;
+  padding: 14px 0;
+  border-bottom: 1px solid color-mix(in srgb, var(--line) 80%, transparent);
+}
+
+.mobile-menu-index {
+  color: var(--accent-text);
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.1em;
+}
+
+.mobile-menu-label {
+  font-family: var(--font-display);
+  font-size: clamp(30px, 10vw, 44px);
+  font-weight: 700;
+  letter-spacing: -0.04em;
+  line-height: 1;
+  transition: color 0.3s, transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.mobile-menu-list a:active .mobile-menu-label,
+.mobile-menu-list a:focus-visible .mobile-menu-label {
+  color: var(--accent-text);
+  transform: translateX(8px);
+}
+
+.mobile-menu-arrow {
+  align-self: center;
+  color: var(--muted-quiet);
+  transition: color 0.3s, transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.mobile-menu-list a:active .mobile-menu-arrow {
+  color: var(--accent-text);
+  transform: translate(4px, -4px);
+}
+
+.mobile-menu-foot {
+  display: grid;
+  gap: 14px;
+}
+
+.mobile-menu-mail {
+  color: var(--ink);
+  font-size: 15px;
+  font-weight: 700;
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
+
+.mobile-menu-social {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 18px;
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+.mobile-menu-social a:active {
+  color: var(--accent-text);
+}
+
+@media (max-width: 809px) {
+  .mobile-menu {
+    display: flex;
+  }
+}
+
+/* ============================================================
+   Scroll cue — centred under the hero
+   ============================================================ */
+
+.hero-scroll-hint {
+  position: absolute;
+  left: 50%;
+  bottom: 22px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  color: var(--muted-quiet);
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  transform: translateX(-50%);
+  pointer-events: none;
+}
+
+.hero-scroll-mouse {
+  position: relative;
+  width: 20px;
+  height: 32px;
+  border: 1.5px solid color-mix(in srgb, var(--muted-quiet) 70%, transparent);
+  border-radius: 100px;
+}
+
+/* Wheel dot travels down the mouse body and fades — reads as "scroll". */
+.hero-scroll-mouse i {
+  position: absolute;
+  top: 6px;
+  left: 50%;
+  width: 3px;
+  height: 6px;
+  border-radius: 100px;
+  background: var(--accent);
+  transform: translateX(-50%);
+  animation: scroll-wheel 1.9s cubic-bezier(0.36, 0, 0.24, 1) infinite;
+}
+
+@keyframes scroll-wheel {
+  0% { opacity: 0; transform: translate(-50%, -4px); }
+  30% { opacity: 1; }
+  70% { opacity: 1; transform: translate(-50%, 11px); }
+  100% { opacity: 0; transform: translate(-50%, 13px); }
+}
+
+@media (max-width: 809px) {
+  .hero-scroll-hint {
+    display: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+
+  .skill-marquee-track {
+    animation: none;
+  }
+
+  .hero-scroll-mouse i {
+    animation: none;
+  }
+
+  .mobile-menu {
+    transition: none;
+  }
+
+  .cursor-dot,
+  .cursor-ring {
+    display: none;
+  }
 }
